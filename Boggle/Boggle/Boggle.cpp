@@ -17,7 +17,7 @@
 int32_t main(int32_t argc, char8_t *argv[])
 {
 	int32_t numWords;
-	char8_t *filename = "c:\\dict\\dictionary.txt";
+	char8_t *filename = "input.txt"; //"dictionary.txt";
 	time_t t;
 	char8_t inChar = 0x00;
 	LARGE_INTEGER ticksPerSecond;
@@ -34,6 +34,8 @@ int32_t main(int32_t argc, char8_t *argv[])
 	parseDictionaryFile(filename,&numWords);
 	bool8_t done = false;
 	int32_t gameCounter = 0;
+
+	printf("%d\n", numWords);
 
 	while(!done)
 	{
