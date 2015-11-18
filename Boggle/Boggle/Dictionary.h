@@ -11,6 +11,7 @@ struct _treenode {
 	char character;
 	TreeNode *child;
 	bool isFinal;
+	bool isCounted;
 	TreeNode* next;
 };
 

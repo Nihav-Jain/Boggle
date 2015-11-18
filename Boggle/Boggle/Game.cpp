@@ -117,8 +117,9 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 		word[len + 1] = 0x00;
 	}
 
-	if (dfaRoot->isFinal)
+	if ((dfaRoot->isFinal) && (!dfaRoot->isCounted))
 	{
+		dfaRoot->isCounted = true;
 		// add word to word list
 		if (topOfWordList == NULL)
 		{

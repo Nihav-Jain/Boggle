@@ -27,6 +27,7 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 	treeRoot = (TreeNode *)malloc(sizeof(TreeNode));
 	treeRoot->character = TREE_ROOT_CHAR;
 	treeRoot->isFinal = false;
+	treeRoot->isCounted = false;
 	treeRoot->child = NULL;
 	treeRoot->next = NULL;
 
@@ -55,6 +56,7 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 				nextTreeNode->character = inputWord[i];
 				nextTreeNode->child = NULL;
 				nextTreeNode->isFinal = false;		// check later
+				nextTreeNode->isCounted = false;
 				nextTreeNode->next = NULL;
 				parentRef->child = nextTreeNode;
 
@@ -81,6 +83,7 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 					nextTreeNode->character = inputWord[i];
 					nextTreeNode->child = NULL;
 					nextTreeNode->isFinal = false;		// check later
+					nextTreeNode->isCounted = false;
 					nextTreeNode->next = NULL;
 
 					parentRef = nextTreeNode;
