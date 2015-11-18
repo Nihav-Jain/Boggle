@@ -27,7 +27,7 @@ void initGame()
 
 void buildRandomBoard()
 {
-	int i, j;
+	int16_t i, j;
 	for (i = 0; i < NUM_ROWS; i++)
 	{
 		for (j = 0; j < NUM_COLS; j++)
@@ -40,7 +40,7 @@ void buildRandomBoard()
 void printBoard()
 {
 #if DEBUG_PRINTING_ON
-	int i, j;
+	int16_t i, j;
 	for (i = 0; i < NUM_ROWS; i++)
 	{
 		for (j = 0; j < NUM_COLS; j++)
@@ -68,6 +68,23 @@ void searchForWords()
 
 	printf("j=%f",j);*/
 
+	int16_t i, j, k;
+	bool8_t visited[NUM_ROWS][NUM_COLS];
+	memset(visited, false, sizeof(visited[0][0]) * NUM_ROWS * NUM_COLS);
+
+	char8_t* word = (char8_t *)malloc(MAX_CHARS_IN_DICTIONARY_WORD * sizeof(char8_t));
+
+	for (i = 0; i < NUM_ROWS; i++)
+	{
+		for (j = 0; j < NUM_COLS; j++)
+		{
+			searchDFS(visited, i, j, word);
+		}
+	}
+}
+
+void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* word)
+{
 
 }
 

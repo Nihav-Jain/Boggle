@@ -33,7 +33,7 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 	TreeNode* nextTreeNode;
 	TreeNode* parentRef;
 
-	int i, len;
+	int16_t i, len;
 	while (fscanf(dictionaryFile, "%s", inputWord) != EOF)
 	{
 		//printf("%s %d\n", inputWord, strlen(inputWord));
