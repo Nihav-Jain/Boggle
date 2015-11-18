@@ -78,14 +78,51 @@ void searchForWords()
 	{
 		for (j = 0; j < NUM_COLS; j++)
 		{
-			searchDFS(visited, i, j, word);
+			searchDFS(visited, i, j, word, treeRoot);
 		}
 	}
 }
 
-void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* word)
+void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* word, TreeNode* dfaRoot)
 {
+	visited[i][j] = true;
 
+	dfaRoot = dfaRoot->child;
+	while (dfaRoot != NULL)
+	{
+		if (dfaRoot->character == gameBoard[i][j])
+		{
+			break;
+		}
+		dfaRoot = dfaRoot->next;
+	}
+	if (dfaRoot == NULL)
+	{
+		// character is not a part of any word, abort
+	}
+	else
+	{
+		// add character to word
+	}
+
+	if (dfaRoot->isFinal)
+	{
+		// add word to word list
+	}
+
+	int a, b;
+	for (a = i - 1; a <= i + 1 && a < NUM_ROWS; a++)
+	{
+		for (b = j - 1; b <= j + 1 && j < NUM_COLS; b++)
+		{
+			if (a >= 0 && b >= 0 && !visited[a][b])
+			{
+				searchDFS(visited, a, b, word, dfaRoot);
+			}
+		}
+	}
+
+	visited[i][j] = false;
 }
 
 // this includes min but exclues max i.e. [min, max)
