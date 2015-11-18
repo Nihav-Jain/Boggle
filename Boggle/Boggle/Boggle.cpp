@@ -17,7 +17,7 @@
 int32_t main(int32_t argc, char8_t *argv[])
 {
 	int32_t numWords;
-	char8_t *filename = "input.txt"; //"dictionary.txt";
+	char8_t *filename = "dictionary.txt"; //"input.txt"; //"dictionary.txt";
 
 	time_t t;
 	char8_t inChar = 0x00;

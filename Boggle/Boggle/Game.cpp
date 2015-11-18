@@ -55,7 +55,13 @@ void printBoard()
 void printWords()
 {
 #if DEBUG_PRINTING_ON
-
+	printf("\nWords found in game board = \n");
+	wordListT *top = topOfWordList;
+	while (top != NULL)
+	{
+		printf("%s\n", top->word);
+		top = top->nextWord;
+	}
 #endif
 }
 
@@ -73,6 +79,7 @@ void searchForWords()
 	memset(visited, false, sizeof(visited[0][0]) * NUM_ROWS * NUM_COLS);
 
 	char8_t* word = (char8_t *)malloc(MAX_CHARS_IN_DICTIONARY_WORD * sizeof(char8_t));
+	strcpy(word, "");
 
 	for (i = 0; i < NUM_ROWS; i++)
 	{
@@ -99,15 +106,37 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 	if (dfaRoot == NULL)
 	{
 		// character is not a part of any word, abort
+		visited[i][j] = false;
+		return;
 	}
 	else
 	{
 		// add character to word
+		int len = strlen(word);
+		word[len] = dfaRoot->character;
+		word[len + 1] = 0x00;
 	}
 
 	if (dfaRoot->isFinal)
 	{
 		// add word to word list
+		if (topOfWordList == NULL)
+		{
+			topOfWordList = (wordListT *)malloc(sizeof(wordListT));
+			topOfWordList->nextWord = NULL;
+			topOfWordList->word = (char8_t *)malloc(sizeof(char8_t)* (strlen(word) + 1));
+			strcpy(topOfWordList->word, word);
+			bottomOfWordList = topOfWordList;
+		}
+		else
+		{
+			wordListT *temp = (wordListT *)malloc(sizeof(wordListT));
+			temp->nextWord = NULL;
+			temp->word = (char8_t *)malloc(sizeof(char8_t)* (strlen(word) + 1));
+			strcpy(temp->word, word);
+			bottomOfWordList->nextWord = temp;
+			bottomOfWordList = bottomOfWordList->nextWord;
+		}
 	}
 
 	int a, b;
@@ -122,6 +151,8 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 		}
 	}
 
+	int len = strlen(word);
+	word[len - 1] = 0x00;
 	visited[i][j] = false;
 }
 
