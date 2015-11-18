@@ -17,5 +17,6 @@ struct _treenode {
 extern TreeNode* treeRoot;
 
 void parseDictionaryFile(char8_t *filename, int32_t *numWords);
+void printDictionaryDFS(TreeNode *root);
 
 #undef extern

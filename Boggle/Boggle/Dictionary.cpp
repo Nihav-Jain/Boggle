@@ -27,14 +27,83 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 	treeRoot = (TreeNode *)malloc(sizeof(TreeNode));
 	treeRoot->character = TREE_ROOT_CHAR;
 	treeRoot->isFinal = false;
+	treeRoot->child = NULL;
 	treeRoot->next = NULL;
 
+	TreeNode* newTreeNode;
+	TreeNode* nextTreeNode;
+	TreeNode* parentRef;
+
+	int i, j, k, len;
 	while (fscanf(dictionaryFile, "%s", inputWord) != EOF)
 	{
+		//printf("%s %d\n", inputWord, strlen(inputWord));
+		if (strlen(inputWord) < MIN_WORD_LEN)
+		{
+			continue;
+		}
 		(*numWords)++;
-		printf("%s\n", inputWord);
-	}
+		
+		len = strlen(inputWord);
+		nextTreeNode = treeRoot->child;
+		parentRef = treeRoot;
+		for (i = 0; i < len; i++)
+		{
+			//printf("%c", inputWord[i]);
+			if (nextTreeNode == NULL)
+			{
+				nextTreeNode = (TreeNode *)malloc(sizeof(TreeNode));
+				nextTreeNode->character = inputWord[i];
+				nextTreeNode->child = NULL;
+				nextTreeNode->isFinal = false;		// check later
+				nextTreeNode->next = NULL;
+				parentRef->child = nextTreeNode;
 
+				parentRef = nextTreeNode;
+				nextTreeNode = nextTreeNode->child;
+			}
+			else
+			{
+				while (nextTreeNode->character != inputWord[i])
+				{
+					if (nextTreeNode->next == NULL)
+						break;
+					nextTreeNode = nextTreeNode->next;
+				}
+				if (nextTreeNode->character == inputWord[i])
+				{
+					parentRef = nextTreeNode;
+					nextTreeNode = nextTreeNode->child;
+				}
+				else
+				{
+					nextTreeNode->next = (TreeNode *)malloc(sizeof(TreeNode));
+					nextTreeNode = nextTreeNode->next;
+					nextTreeNode->character = inputWord[i];
+					nextTreeNode->child = NULL;
+					nextTreeNode->isFinal = false;		// check later
+					nextTreeNode->next = NULL;
+
+					parentRef = nextTreeNode;
+					nextTreeNode = nextTreeNode->child;
+				}
+			}
+		}
+		//printf("\n");
+	}
+	printDictionaryDFS(treeRoot);
+	printf("\n");
 	fclose(dictionaryFile);
 }
 
+void printDictionaryDFS(TreeNode *root)
+{
+	printf("%c", root->character);
+
+	TreeNode* childList = root->child;
+	while (childList != NULL)
+	{
+		printDictionaryDFS(childList);
+		childList = childList->next;
+	}
+}
