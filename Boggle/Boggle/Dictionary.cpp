@@ -87,6 +87,10 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 					nextTreeNode = nextTreeNode->child;
 				}
 			}
+			if (i == len - 1)
+			{
+				parentRef->isFinal = true;
+			}
 		}
 		//printf("\n");
 	}
