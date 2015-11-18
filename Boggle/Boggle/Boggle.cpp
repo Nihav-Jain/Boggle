@@ -18,6 +18,7 @@ int32_t main(int32_t argc, char8_t *argv[])
 {
 	int32_t numWords;
 	char8_t *filename = "input.txt"; //"dictionary.txt";
+
 	time_t t;
 	char8_t inChar = 0x00;
 	LARGE_INTEGER ticksPerSecond;
@@ -31,7 +32,8 @@ int32_t main(int32_t argc, char8_t *argv[])
 	srand((unsigned int)time(&t));
 
 //	topOfWordList = NULL;
-	parseDictionaryFile(filename,&numWords);
+	parseDictionaryFile(filename, &numWords);
+
 	bool8_t done = false;
 	int32_t gameCounter = 0;
 
@@ -41,12 +43,15 @@ int32_t main(int32_t argc, char8_t *argv[])
 	{
 		initGame();
 		buildRandomBoard();
+
 #if DEBUG_PRINTING_ON
 		printBoard();
 #endif
+
 		QueryPerformanceCounter(&startTime);
 		searchForWords();
 		QueryPerformanceCounter(&endTime);
+
 		elapsedTime.QuadPart = endTime.QuadPart - startTime.QuadPart;
 		float_t timeInMilliseconds = 1000.0f* ((float_t)elapsedTime.QuadPart/(float_t)ticksPerSecond.QuadPart);
 
