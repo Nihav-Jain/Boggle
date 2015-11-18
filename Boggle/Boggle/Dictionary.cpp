@@ -99,6 +99,7 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 	}
 	//printDictionaryDFS(treeRoot);
 	//printf("\n");
+	free(inputWord);
 	fclose(dictionaryFile);
 }
 

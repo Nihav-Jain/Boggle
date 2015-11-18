@@ -13,11 +13,40 @@
 #include "dice.h"
 #include "game.h"
 
-char8_t gameBoard[NUM_ROWS][NUM_COLS];
+char8_t gameBoard[NUM_ROWS][NUM_COLS] = { { 'E', 'W', 'R', 'X', 'X' }, { 'V', 'R', 'S', 'G', 'H' }, { 'A', 'W', 'D', 'L', 'H' }, { 'F', 'N', 'V', 'U', 'S' }, { 'Q', 'M', 'U', 'R', 'O' } };
 
 void resetGame()
 {
+	// reset the isCounted of the DFA
+	TreeNode* root = treeRoot;
+	resetDictionaryDFA(root);
 
+	// free the word list
+	wordListT *wordPtrToFree = topOfWordList;
+	wordListT *tempHolder;
+	while (wordPtrToFree != NULL)
+	{
+		free(wordPtrToFree->word);
+		tempHolder = wordPtrToFree;
+		wordPtrToFree = wordPtrToFree->nextWord;
+		free(tempHolder);
+	}
+	topOfWordList = NULL;
+	bottomOfWordList = NULL;
+}
+
+void resetDictionaryDFA(TreeNode* root)
+{
+	root->isCounted = false;
+
+	if (root->child != NULL)
+	{
+		resetDictionaryDFA(root->child);
+	}
+	if (root->next != NULL)
+	{
+		resetDictionaryDFA(root->next);
+	}
 }
 
 void initGame()
@@ -28,13 +57,14 @@ void initGame()
 void buildRandomBoard()
 {
 	int16_t i, j;
-	for (i = 0; i < NUM_ROWS; i++)
+	//gameBoard = { { 'E', 'W', 'R', 'X', 'X' }, { 'V', 'R', 'S', 'G', 'H' }, { 'A', 'W', 'D', 'L', 'H' }, { 'F', 'N', 'V', 'U', 'S' }, { 'Q', 'M', 'U', 'R', 'O' } };
+	/*for (i = 0; i < NUM_ROWS; i++)
 	{
 		for (j = 0; j < NUM_COLS; j++)
 		{
 			gameBoard[i][j] = (char8_t)rangedRandom('A', 'Z' + 1);
 		}
-	}
+	}*/
 }
 
 void printBoard()
@@ -55,13 +85,16 @@ void printBoard()
 void printWords()
 {
 #if DEBUG_PRINTING_ON
+	int wordCount = 0;
 	printf("\nWords found in game board = \n");
 	wordListT *top = topOfWordList;
 	while (top != NULL)
 	{
 		printf("%s\n", top->word);
 		top = top->nextWord;
+		wordCount++;
 	}
+	printf("Word count = %d\n", wordCount);
 #endif
 }
 
@@ -88,6 +121,9 @@ void searchForWords()
 			searchDFS(visited, i, j, word, treeRoot);
 		}
 	}
+	free(word);
+
+	// call reset
 }
 
 void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* word, TreeNode* dfaRoot)

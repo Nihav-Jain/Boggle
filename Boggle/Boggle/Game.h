@@ -22,5 +22,6 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 void printBoard();
 void printWords();
 void resetGame();
+void resetDictionaryDFA(TreeNode* root);
 
 #undef extern
