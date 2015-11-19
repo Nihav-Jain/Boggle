@@ -44,7 +44,7 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 		}
 		(*numWords)++;
 		
-		len = strlen(inputWord);
+		len = (int16_t) strlen(inputWord);
 		nextTreeNode = treeRoot->child;
 		parentRef = treeRoot;
 		for (i = 0; i < len; i++)

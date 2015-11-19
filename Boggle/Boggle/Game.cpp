@@ -75,13 +75,13 @@ void buildRandomBoard()
 	{
 		for (j = 0; j < NUM_COLS; j++)
 		{
-			randomDieNumber = rangedRandom(0, (NUM_ROWS * NUM_COLS)-1);
+			randomDieNumber = (int16_t) rangedRandom(0, (NUM_ROWS * NUM_COLS)-1);
 			while (hasDieBeenChosen[randomDieNumber])
 			{
 				randomDieNumber = (randomDieNumber + 1) % (NUM_ROWS * NUM_COLS);
 			}
 			hasDieBeenChosen[randomDieNumber] = true;
-			randomDieFace = rangedRandom(0, 5);
+			randomDieFace = (int16_t) rangedRandom(0, 5);
 			//gameBoard[i][j] = (char8_t)rangedRandom('A', 'Z');
 			gameBoard[i][j] = dice[randomDieNumber][randomDieFace];
 		}
@@ -128,7 +128,7 @@ void searchForWords()
 
 	printf("j=%f",j);*/
 
-	int16_t i, j, k;
+	int16_t i, j;
 	bool8_t visited[NUM_ROWS][NUM_COLS];
 	memset(visited, false, sizeof(visited[0][0]) * NUM_ROWS * NUM_COLS);
 
@@ -169,7 +169,7 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 	else
 	{
 		// add character to word
-		int len = strlen(word);
+		int16_t len = (int16_t) strlen(word);
 		word[len] = dfaRoot->character;
 		word[len + 1] = 0x00;
 	}
@@ -197,7 +197,7 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 		}
 	}
 
-	int a, b;
+	int16_t a, b;
 	for (a = i - 1; a <= i + 1 && a < NUM_ROWS; a++)
 	{
 		for (b = j - 1; b <= j + 1 && j < NUM_COLS; b++)
@@ -209,7 +209,7 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 		}
 	}
 
-	int len = strlen(word);
+	int16_t len = (int16_t) strlen(word);
 	word[len - 1] = 0x00;
 	visited[i][j] = false;
 }
