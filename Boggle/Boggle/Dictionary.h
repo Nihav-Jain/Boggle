@@ -19,5 +19,6 @@ extern TreeNode* treeRoot;
 
 void parseDictionaryFile(char8_t *filename, int32_t *numWords);
 void printDictionaryDFS(TreeNode *root);
+void freeDictionary(TreeNode *root);
 
 #undef extern

@@ -114,3 +114,17 @@ void printDictionaryDFS(TreeNode *root)
 		childList = childList->next;
 	}
 }
+
+void freeDictionary(TreeNode *root)
+{
+	if (root->child != NULL)
+	{
+		freeDictionary(root->child);
+	}
+	if (root->next != NULL)
+	{
+		freeDictionary(root->next);
+	}
+
+	free(root);
+}
