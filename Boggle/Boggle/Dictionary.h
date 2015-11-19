@@ -8,11 +8,11 @@ struct _treenode;
 typedef struct _treenode TreeNode;
 typedef TreeNode* ChildList;
 struct _treenode {
-	char character;
 	TreeNode *child;
+	TreeNode* next;
 	bool isFinal;
 	bool isCounted;
-	TreeNode* next;
+	char character;
 };
 
 extern TreeNode* treeRoot;
