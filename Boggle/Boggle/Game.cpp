@@ -13,6 +13,12 @@
 #include "dice.h"
 #include "game.h"
 
+#if BIG_BOGGLE
+char8_t* dice[NUM_ROWS * NUM_COLS] = { DIE1, DIE2, DIE3, DIE4, DIE5, DIE6, DIE7, DIE8, DIE9, DIE10, DIE11, DIE12, DIE13, DIE14, DIE15, DIE16, DIE17, DIE18, DIE19, DIE20, DIE21, DIE22, DIE23, DIE24, DIE25};
+#else
+char8_t* dice[NUM_ROWS * NUM_COLS] = { DIE1, DIE2, DIE3, DIE4, DIE5, DIE6, DIE7, DIE8, DIE9, DIE10, DIE11, DIE12, DIE13, DIE14, DIE15, DIE16};
+#endif
+
 char8_t gameBoard[NUM_ROWS][NUM_COLS] = { { 'E', 'W', 'R', 'X', 'X' }, { 'V', 'R', 'S', 'G', 'H' }, { 'A', 'W', 'D', 'L', 'H' }, { 'F', 'N', 'V', 'U', 'S' }, { 'Q', 'M', 'U', 'R', 'O' } };
 
 void resetGame()
@@ -22,17 +28,20 @@ void resetGame()
 	resetDictionaryDFA(root);
 
 	// free the word list
-	wordListT *wordPtrToFree = topOfWordList;
-	wordListT *tempHolder;
-	while (wordPtrToFree != NULL)
+	if (topOfWordList != NULL)
 	{
-		free(wordPtrToFree->word);
-		tempHolder = wordPtrToFree;
-		wordPtrToFree = wordPtrToFree->nextWord;
-		free(tempHolder);
+		wordListT *wordPtrToFree = topOfWordList;
+		wordListT *tempHolder;
+		while (wordPtrToFree != NULL)
+		{
+			free(wordPtrToFree->word);
+			tempHolder = wordPtrToFree;
+			wordPtrToFree = wordPtrToFree->nextWord;
+			free(tempHolder);
+		}
+		topOfWordList = NULL;
+		bottomOfWordList = NULL;
 	}
-	topOfWordList = NULL;
-	bottomOfWordList = NULL;
 }
 
 void resetDictionaryDFA(TreeNode* root)
@@ -57,14 +66,26 @@ void initGame()
 void buildRandomBoard()
 {
 	int16_t i, j;
-	//gameBoard = { { 'E', 'W', 'R', 'X', 'X' }, { 'V', 'R', 'S', 'G', 'H' }, { 'A', 'W', 'D', 'L', 'H' }, { 'F', 'N', 'V', 'U', 'S' }, { 'Q', 'M', 'U', 'R', 'O' } };
-	/*for (i = 0; i < NUM_ROWS; i++)
+	int16_t randomDieNumber, randomDieFace;
+
+	bool hasDieBeenChosen[NUM_ROWS * NUM_COLS];
+	memset(hasDieBeenChosen, false, sizeof(hasDieBeenChosen[0]) * NUM_ROWS * NUM_COLS);
+
+	for (i = 0; i < NUM_ROWS; i++)
 	{
 		for (j = 0; j < NUM_COLS; j++)
 		{
-			gameBoard[i][j] = (char8_t)rangedRandom('A', 'Z' + 1);
+			randomDieNumber = rangedRandom(0, (NUM_ROWS * NUM_COLS)-1);
+			while (hasDieBeenChosen[randomDieNumber])
+			{
+				randomDieNumber = (randomDieNumber + 1) % (NUM_ROWS * NUM_COLS);
+			}
+			hasDieBeenChosen[randomDieNumber] = true;
+			randomDieFace = rangedRandom(0, 5);
+			//gameBoard[i][j] = (char8_t)rangedRandom('A', 'Z');
+			gameBoard[i][j] = dice[randomDieNumber][randomDieFace];
 		}
-	}*/
+	}
 }
 
 void printBoard()
