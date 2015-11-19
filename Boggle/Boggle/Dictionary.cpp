@@ -42,6 +42,19 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 		{
 			continue;
 		}
+		if ((strlen(inputWord) >= 2) && (inputWord[0] == 'Q') && (inputWord[1] != 'U'))
+		{
+			continue;
+		}
+		if ((inputWord[0] == 'Q') && (inputWord[1] == 'U'))
+		{
+			len = (int16_t)strlen(inputWord);
+			for (i = 1; i < len; i++)
+			{
+				inputWord[i] = inputWord[i + 1];
+			}
+		}
+
 		(*numWords)++;
 		
 		len = (int16_t) strlen(inputWord);
