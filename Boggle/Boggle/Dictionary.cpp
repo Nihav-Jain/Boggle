@@ -109,6 +109,10 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 	fclose(dictionaryFile);
 }
 
+/**
+*	@method	initializeTreeNode
+*	@desc	initializes this given tree node with the given character
+*/
 void initializeTreeNode(TreeNode *treeNode, char8_t character)
 {
 	treeNode->character = character;
@@ -118,6 +122,10 @@ void initializeTreeNode(TreeNode *treeNode, char8_t character)
 	treeNode->nextSibling = NULL;
 }
 
+/**
+*	@method	printDictionaryDFS
+*	@desc	prints the DFA tree in Pre order traversal
+*/
 void printDictionaryDFS(TreeNode *root)
 {
 	printf("%c", root->character);
@@ -130,6 +138,10 @@ void printDictionaryDFS(TreeNode *root)
 	}
 }
 
+/**
+*	@method	freeDictionary
+*	@desc	releases the heap memory occupied by the DFA tree
+*/
 void freeDictionary(TreeNode *root)
 {
 	if (root->child != NULL)
