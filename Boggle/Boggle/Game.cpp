@@ -19,7 +19,7 @@ char8_t* dice[NUM_ROWS * NUM_COLS] = { DIE1, DIE2, DIE3, DIE4, DIE5, DIE6, DIE7,
 char8_t* dice[NUM_ROWS * NUM_COLS] = { DIE1, DIE2, DIE3, DIE4, DIE5, DIE6, DIE7, DIE8, DIE9, DIE10, DIE11, DIE12, DIE13, DIE14, DIE15, DIE16};
 #endif
 
-char8_t gameBoard[NUM_ROWS][NUM_COLS] = { { 'E', 'W', 'R', 'X', 'X' }, { 'V', 'R', 'S', 'G', 'H' }, { 'A', 'W', 'D', 'L', 'H' }, { 'F', 'N', 'V', 'U', 'S' }, { 'Q', 'M', 'U', 'R', 'O' } };
+char8_t gameBoard[NUM_ROWS][NUM_COLS]; // = { { 'E', 'W', 'R', 'X', 'X' }, { 'V', 'R', 'S', 'G', 'H' }, { 'A', 'W', 'D', 'L', 'H' }, { 'F', 'N', 'V', 'U', 'S' }, { 'Q', 'M', 'U', 'R', 'O' } };
 
 void resetGame()
 {
@@ -100,6 +100,7 @@ void printBoard()
 		}
 		printf("\n");
 	}
+	printf("\n");
 #endif
 }
 
@@ -143,13 +144,20 @@ void searchForWords()
 		}
 	}
 	free(word);
-
+	
 	// call reset
 }
 
 void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* word, TreeNode* dfaRoot)
 {
 	visited[i][j] = true;
+
+	/*int16_t initStringLen = strlen(word);
+	if (initStringLen > 0 && word[initStringLen - 1] == 'Q')
+	{
+		word[initStringLen] = 'U';
+		word[initStringLen + 1] = 0x00;
+	}*/
 
 	dfaRoot = dfaRoot->child;
 	while (dfaRoot != NULL)
@@ -171,6 +179,11 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 		// add character to word
 		int16_t len = (int16_t) strlen(word);
 		word[len] = dfaRoot->character;
+		if (word[len] == 'Q')
+		{
+			word[len + 1] = 'U';
+			len = len + 1;
+		}
 		word[len + 1] = 0x00;
 	}
 
@@ -210,7 +223,10 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 	}
 
 	int16_t len = (int16_t) strlen(word);
-	word[len - 1] = 0x00;
+	if (len >= 2 && word[len - 1] == 'U' && word[len - 2] == 'Q')
+		word[len - 2] = 0x00;
+	else
+		word[len - 1] = 0x00;
 	visited[i][j] = false;
 }
 

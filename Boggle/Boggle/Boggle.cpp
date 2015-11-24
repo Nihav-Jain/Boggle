@@ -14,7 +14,8 @@
 
 
 
-int32_t main(int32_t argc, char8_t *argv[])
+//int32_t main(int32_t argc, char8_t *argv[])
+int32_t main()
 {
 	int32_t numWords;
 	char8_t *filename = "dictionary.txt"; //"input.txt"; //"dictionary.txt";
@@ -36,8 +37,6 @@ int32_t main(int32_t argc, char8_t *argv[])
 
 	bool8_t done = false;
 	int32_t gameCounter = 0;
-
-	printf("%d\n", numWords);
 
 	while(!done)
 	{
@@ -93,4 +92,5 @@ int32_t main(int32_t argc, char8_t *argv[])
 
 	// free dictionary
 	freeDictionary(treeRoot);
+	getchar();
 }
