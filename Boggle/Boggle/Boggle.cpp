@@ -14,11 +14,10 @@
 
 
 
-//int32_t main(int32_t argc, char8_t *argv[])
-int32_t main()
+int32_t main(int32_t argc, char8_t *argv[])
 {
 	int32_t numWords;
-	char8_t *filename = "dictionary.txt"; //"input.txt"; //"dictionary.txt";
+	char8_t *filename = (argc >= 2) ? argv[1] : "dictionary.txt";
 
 	time_t t;
 	char8_t inChar = 0x00;
@@ -32,7 +31,6 @@ int32_t main()
 
 	srand((unsigned int)time(&t));
 
-//	topOfWordList = NULL;
 	parseDictionaryFile(filename, &numWords);
 
 	bool8_t done = false;
@@ -92,5 +90,6 @@ int32_t main()
 
 	// free dictionary
 	freeDictionary(treeRoot);
+
 	getchar();
 }

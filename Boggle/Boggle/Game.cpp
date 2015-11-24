@@ -52,9 +52,9 @@ void resetDictionaryDFA(TreeNode* root)
 	{
 		resetDictionaryDFA(root->child);
 	}
-	if (root->next != NULL)
+	if (root->nextSibling != NULL)
 	{
-		resetDictionaryDFA(root->next);
+		resetDictionaryDFA(root->nextSibling);
 	}
 }
 
@@ -166,7 +166,7 @@ void searchDFS(bool8_t visited[NUM_ROWS][NUM_COLS], int16_t i, int16_t j, char* 
 		{
 			break;
 		}
-		dfaRoot = dfaRoot->next;
+		dfaRoot = dfaRoot->nextSibling;
 	}
 	if (dfaRoot == NULL)
 	{

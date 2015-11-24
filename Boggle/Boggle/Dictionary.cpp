@@ -10,6 +10,11 @@
 #include "game.h"
 
 
+/**
+*	@method	parseDictionaryFile
+*	@desc	reads the dictionary file, and adds the valid words to a Deterministic Finite Automata (DFA),
+*			removes invalid words (words with length less than 4 or containing special symbols)
+*/
 void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 {
 	FILE* dictionaryFile;
@@ -24,96 +29,93 @@ void parseDictionaryFile(char8_t *filename, int32_t *numWords)
 
 	char8_t *inputWord = (char8_t *)malloc(MAX_CHARS_IN_DICTIONARY_WORD * sizeof(char8_t));
 
+	// initializing the root of the DFA
 	treeRoot = (TreeNode *)malloc(sizeof(TreeNode));
-	treeRoot->character = TREE_ROOT_CHAR;
-	treeRoot->isFinal = false;
-	treeRoot->isCounted = false;
-	treeRoot->child = NULL;
-	treeRoot->next = NULL;
+	initializeTreeNode(treeRoot, TREE_ROOT_CHAR);
 
 	TreeNode* nextTreeNode;
 	TreeNode* parentRef;
 
-	int16_t i, len;
+	int16_t i, j, len;
 	while (fscanf(dictionaryFile, "%s", inputWord) != EOF)
 	{
-		//printf("%s %d\n", inputWord, strlen(inputWord));
-		if (strlen(inputWord) < MIN_WORD_LEN)
+		// length validation
+		len = (int16_t)strlen(inputWord);
+		if (len < MIN_WORD_LEN)
 		{
 			continue;
 		}
-		if ((strlen(inputWord) >= 2) && (inputWord[0] == 'Q') && (inputWord[1] != 'U'))
+
+		// strip out any 'U' which appears right after a 'Q' since the dice face 'Q' is considered a 'QU'
+		for (i = 0; i < len - 1; i++)
 		{
-			continue;
-		}
-		if ((inputWord[0] == 'Q') && (inputWord[1] == 'U'))
-		{
-			len = (int16_t)strlen(inputWord);
-			for (i = 1; i < len; i++)
+			if (inputWord[i] == 'Q' && inputWord[i + 1] == 'U')
 			{
-				inputWord[i] = inputWord[i + 1];
+				for (j = i + 1; j < len; j++)
+				{
+					inputWord[j] = inputWord[j + 1];
+				}
+				len--;
 			}
 		}
 
 		(*numWords)++;
 		
-		len = (int16_t) strlen(inputWord);
 		nextTreeNode = treeRoot->child;
 		parentRef = treeRoot;
 		for (i = 0; i < len; i++)
 		{
-			//printf("%c", inputWord[i]);
+			// if this is the first child of its parent
 			if (nextTreeNode == NULL)
 			{
 				nextTreeNode = (TreeNode *)malloc(sizeof(TreeNode));
-				nextTreeNode->character = inputWord[i];
-				nextTreeNode->child = NULL;
-				nextTreeNode->isFinal = false;		// check later
-				nextTreeNode->isCounted = false;
-				nextTreeNode->next = NULL;
+				initializeTreeNode(nextTreeNode, inputWord[i]);
 				parentRef->child = nextTreeNode;
 
-				parentRef = nextTreeNode;
-				nextTreeNode = nextTreeNode->child;
 			}
 			else
 			{
+				// find the sibling node which has the same character as inputWord[i]
 				while (nextTreeNode->character != inputWord[i])
 				{
-					if (nextTreeNode->next == NULL)
+					if (nextTreeNode->nextSibling == NULL)
 						break;
-					nextTreeNode = nextTreeNode->next;
+					nextTreeNode = nextTreeNode->nextSibling;
 				}
-				if (nextTreeNode->character == inputWord[i])
-				{
-					parentRef = nextTreeNode;
-					nextTreeNode = nextTreeNode->child;
-				}
-				else
-				{
-					nextTreeNode->next = (TreeNode *)malloc(sizeof(TreeNode));
-					nextTreeNode = nextTreeNode->next;
-					nextTreeNode->character = inputWord[i];
-					nextTreeNode->child = NULL;
-					nextTreeNode->isFinal = false;		// check later
-					nextTreeNode->isCounted = false;
-					nextTreeNode->next = NULL;
 
-					parentRef = nextTreeNode;
-					nextTreeNode = nextTreeNode->child;
+				// if the character inputWord[i] already exists in the tree at the current level then proceed to next character in the word
+				// else add a new sibling with inputWord[i] as its character
+				if (nextTreeNode->character != inputWord[i])
+				{
+					nextTreeNode->nextSibling = (TreeNode *)malloc(sizeof(TreeNode));
+					nextTreeNode = nextTreeNode->nextSibling;
+					initializeTreeNode(nextTreeNode, inputWord[i]);
 				}
 			}
+
+			// this node will now become the parent since the next character to be encountered will go in the next level of the tree
+			parentRef = nextTreeNode;
+			nextTreeNode = nextTreeNode->child;
+			
+			// if this is the last character then mark this node as the final node
 			if (i == len - 1)
 			{
 				parentRef->isFinal = true;
 			}
 		}
-		//printf("\n");
 	}
-	//printDictionaryDFS(treeRoot);
-	//printf("\n");
+
 	free(inputWord);
 	fclose(dictionaryFile);
+}
+
+void initializeTreeNode(TreeNode *treeNode, char8_t character)
+{
+	treeNode->character = character;
+	treeNode->child = NULL;
+	treeNode->isFinal = false;
+	treeNode->isCounted = false;
+	treeNode->nextSibling = NULL;
 }
 
 void printDictionaryDFS(TreeNode *root)
@@ -124,7 +126,7 @@ void printDictionaryDFS(TreeNode *root)
 	while (childList != NULL)
 	{
 		printDictionaryDFS(childList);
-		childList = childList->next;
+		childList = childList->nextSibling;
 	}
 }
 
@@ -134,9 +136,9 @@ void freeDictionary(TreeNode *root)
 	{
 		freeDictionary(root->child);
 	}
-	if (root->next != NULL)
+	if (root->nextSibling != NULL)
 	{
-		freeDictionary(root->next);
+		freeDictionary(root->nextSibling);
 	}
 
 	free(root);
